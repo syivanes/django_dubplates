@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-j!vl6z(#=3hdvb24o21+-!+iv0hcpbxx#9)0@4_z!r9pmbnafd
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'django_dubplates.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'digital_dubplates',
+        'USER': 'djangodubplates',
+        'PASSWORD': 'djangodubplates',
+        'HOST': 'localhost',
+        'PORT': 5432,
     }
 }
 
