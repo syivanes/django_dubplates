@@ -1,4 +1,4 @@
-#!/Users/sergeyivanes/Prog/django_dubplates/env/bin/python
+#!/Users/sergeyivanes/Prog/django_dubplates/env/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
