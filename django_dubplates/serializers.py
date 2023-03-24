@@ -10,15 +10,16 @@ class TrackSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         """
-        Create and return a new `Snippet` instance, given the validated data.
+        Create and return a new `Track` instance, given the validated data.
         """
-        return Snippet.objects.create(**validated_data)
+        return Track.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         """
-        Update and return an existing `Snippet` instance, given the validated data.
+        Update and return an existing `Track` instance, given the validated data.
         """
+        print(validated_data)
         instance.title = validated_data.get('title', instance.title)
-        instance.url = validated_data.get('url', instance.code)
+        instance.url = validated_data.get('url', instance.url)
         instance.save()
         return instance
