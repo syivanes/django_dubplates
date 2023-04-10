@@ -16,3 +16,19 @@ class Track(models.Model):
 
     def save(self, *args, **kwargs):
         super(Track, self).save(*args, **kwargs)
+
+class User(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    username = models.CharField(max_length=50, blank=False)
+    password = models.CharField(max_length=50, blank=False)
+    is_superuser = models.BooleanField(default=False)
+    email = models.EmailField(max_length = 254, blank=False)
+
+    class Meta:
+        ordering = ['created']
+
+    def save(self, *args, **kwargs):
+        print(args)
+        print('*************')
+        print(kwargs)
+        # super(User, self).save(*args, **kwargs)

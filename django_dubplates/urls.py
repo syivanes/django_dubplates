@@ -32,7 +32,8 @@ track_detail = TrackViewSet.as_view({
     'delete': 'destroy'
 })
 user_list = UserViewSet.as_view({
-    'get': 'list'
+    'get': 'list',
+    'post': 'create'
 })
 user_detail = UserViewSet.as_view({
     'get': 'retrieve'

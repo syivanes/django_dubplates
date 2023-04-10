@@ -13,25 +13,28 @@ from django_dubplates.permissions import IsOwnerOrReadOnly
 
 
 class TrackViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
+	"""
+	This viewset automatically provides `list`, `create`, `retrieve`,
+	`update` and `destroy` actions.
+	"""
 
-    queryset = Track.objects.all()
-    serializer_class = TrackSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
-                          IsOwnerOrReadOnly]
+	queryset = Track.objects.all()
+	serializer_class = TrackSerializer
+	permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+						  IsOwnerOrReadOnly]
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+	def perform_create(self, serializer):
+		serializer.save(owner=self.request.user)
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    This viewset automatically provides `list` and `retrieve` actions.
-    """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class UserViewSet(viewsets.ModelViewSet):
+	"""
+	This viewset automatically provides `list` and `retrieve` actions.
+	"""
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
+
+	def perform_create(self, serializer):
+		serializer.save()
 
 
 @api_view(['GET'])
