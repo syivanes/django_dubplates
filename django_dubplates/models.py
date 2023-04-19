@@ -9,7 +9,7 @@ class Track(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=100, blank=True, default='')
     download_url = models.TextField()
-    owner = models.ForeignKey('auth.User', related_name='tracks_author', on_delete=models.CASCADE, default=1)
+    owner = models.ForeignKey('auth.User', related_name='track_author', on_delete=models.CASCADE, default=1)
 
     class Meta:
         ordering = ['created']
@@ -28,7 +28,9 @@ class User(models.Model):
         ordering = ['created']
 
     def save(self, *args, **kwargs):
-        print(args)
-        print('*************')
-        print(kwargs)
-        # super(User, self).save(*args, **kwargs)
+        print('calling save() in models.py')
+        super(User, self).save(*args, **kwargs)
+
+class Watchlist(models.Model):
+    user = models.OneToOneField('auth.User', related_name='watchlist_user', on_delete=models.CASCADE)
+    watched_track = models.ForeignKey(Track, related_name='watchlist_track', on_delete=models.CASCADE)

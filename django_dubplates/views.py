@@ -34,6 +34,11 @@ class UserViewSet(viewsets.ModelViewSet):
 	serializer_class = UserSerializer
 
 	def perform_create(self, serializer):
+		# print('*************')
+		# print(serializer.validated_data.get('password'))
+		# print('*************')
+		# serializer.set_password(serializer.validated_data.get('password'))
+		print('calling perform_create() in views.py')
 		serializer.save()
 
 
