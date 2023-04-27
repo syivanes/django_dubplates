@@ -9,6 +9,8 @@ from django_dubplates.models import Track
 from django_dubplates.serializers import TrackSerializer
 from django.contrib.auth.models import User
 from django_dubplates.serializers import UserSerializer
+from django_dubplates.models import Watchlist
+from django_dubplates.serializers import WatchlistSerializer
 from django_dubplates.permissions import IsOwnerOrReadOnly
 
 
@@ -41,10 +43,19 @@ class UserViewSet(viewsets.ModelViewSet):
 		print('calling perform_create() in views.py')
 		serializer.save()
 
+class WatchlistViewSet(viewsets.ModelViewSet):
+	queryset = Watchlist.objects.all()
+	serializer_class = WatchlistSerializer
+
+	def perform_create(self, serializer):
+		print(self)
+		serializer.save(user=self.request.user)
+
 
 @api_view(['GET'])
 def api_root(request, format=None):
 	return Response({
 		'users': reverse('user-view-set', request=request, format=format),
-		'tracks': reverse('tracks-view-set', request=request, format=format)
+		'tracks': reverse('tracks-view-set', request=request, format=format),
+		'watchlists': reverse('watchlist-view-set', request=request, format=format)
 	})

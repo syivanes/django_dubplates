@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django_dubplates.models import Track
+from django_dubplates.models import Watchlist
 from django.contrib.auth.models import User
 
 
@@ -47,14 +48,23 @@ class TrackSerializer(serializers.HyperlinkedModelSerializer):
 #      fields = ['id', 'username', 'tracks_author']
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    tracks_author = serializers.HyperlinkedRelatedField(many=True, view_name='track-detail', read_only=True)
+    track_author = serializers.HyperlinkedRelatedField(many=True, view_name='track-detail', read_only=True)
+    watchlist_user = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
 
     class Meta:
         model = User
-        fields = ['url', 'id', 'username', 'password', 'email', 'tracks_author']
+        fields = ['url', 'id', 'username', 'password', 'email', 'track_author', 'watchlist_user']
     def create(self, validated_data):
         print('calling create() in serializers.py')
         user = super(UserSerializer, self).create(validated_data)
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+class WatchlistSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
+    user = serializers.ReadOnlyField(source='user.username')
+
+    class Meta:
+        model = Watchlist
+        fields = '__all__'
