@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django_dubplates.views import TrackViewSet, UserViewSet, WatchlistViewSet, api_root
+from django_dubplates.views import TrackViewSet, UserViewSet, UserTrackRelViewSet, api_root
 from django.urls import path, include
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework.routers import DefaultRouter
@@ -39,12 +39,12 @@ user_detail = UserViewSet.as_view({
     'get': 'retrieve'
 })
 
-watchlist_all = WatchlistViewSet.as_view({
+user_track_all = UserTrackRelViewSet.as_view({
     'get': 'list',
     'post': 'create'    
 })
 
-watchlist_detail = WatchlistViewSet.as_view({
+user_track_detail = UserTrackRelViewSet.as_view({
     'get': 'retrieve',
     'put': 'update',
     'patch': 'partial_update',
@@ -57,8 +57,8 @@ urlpatterns = format_suffix_patterns([
     path('tracks/<int:pk>/', track_detail, name='track-detail'),
     path('users/', user_list, name='user-list'),
     path('users/<int:pk>/', user_detail, name='user-detail'),
-    path('watchlists/', watchlist_all, name='watchlist-all'),
-    path('watchlists/<int:pk>/', watchlist_detail, name='watchlist-detail')
+    path('user_track/', user_track_all, name='user-track-all'),
+    path('user_track/<int:pk>/', user_track_detail, name='user-track-detail')
 ])
 
 urlpatterns += [path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
