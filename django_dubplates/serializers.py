@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django_dubplates.models import Track
 from django_dubplates.models import UserTrackRelationship
+# from django_dubplates.models import User
 from django.contrib.auth.models import User
 
 
@@ -63,9 +64,17 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 class UserTrackRelSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
-    user = serializers.IntegerField()
-    track = serializers.IntegerField()
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=False, read_only=False)
+    track = serializers.PrimaryKeyRelatedField(queryset=Track.objects.all(), many=False, read_only=False)
 
     class Meta:
         model = UserTrackRelationship
-        fields = '__all__'
+        fields = ['id', 'user', 'track', 'relationship_type']
+
+    def create(self, validated_data):
+        print('********************************')        
+        print(type(validated_data['user']))
+        print('********************************')
+        user_track_serializer = super(UserTrackRelSerializer, self).create(validated_data)
+        user_track_serializer.save()
+        return user_track_serializer

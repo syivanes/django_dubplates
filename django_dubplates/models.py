@@ -6,29 +6,29 @@ from multiselectfield import MultiSelectField
 
 highlighted = models.TextField()
 
-class User(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    username = models.CharField(max_length=50, blank=False)
-    password = models.CharField(max_length=50, blank=False)
-    is_superuser = models.BooleanField(default=False)
-    email = models.EmailField(max_length = 254, blank=False)
-    # tracks_owned
-    # tracks_watching
-    # tracks_copy_purchased
+# class User(models.Model):
+#     created = models.DateTimeField(auto_now_add=True)
+#     username = models.CharField(max_length=50, blank=False)
+#     password = models.CharField(max_length=50, blank=False)
+#     is_superuser = models.BooleanField(default=False)
+#     email = models.EmailField(max_length = 254, blank=False)
+#     # tracks_owned
+#     # tracks_watching
+#     # tracks_copy_purchased
 
-    class Meta:
-        ordering = ['created']
+#     class Meta:
+#         ordering = ['created']
 
-    def save(self, *args, **kwargs):
-        print('calling save() in models.py')
-        super(User, self).save(*args, **kwargs)
+#     def save(self, *args, **kwargs):
+#         print('calling save() in models.py')
+#         super(User, self).save(*args, **kwargs)
 
 class Track(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=100, blank=True, default='')
     download_url = models.TextField()
     track_user_relationships = models.ManyToManyField(
-        User,
+        'auth.User',
         through='UserTrackRelationship',
         through_fields=('track', 'user'),
     )
@@ -45,10 +45,9 @@ class UserTrackRelationship(models.Model):
                             ('user_watching_track', 'This User Is Watching This Track'),
                             ('user_purchased_copy', 'This User Has Purchased a Copy of This Track'))
 
-    user = models.ForeignKey(User, related_name='usertrackrel_user', on_delete=models.CASCADE)
+    user = models.ForeignKey('auth.User', related_name='usertrackrel_user', on_delete=models.CASCADE)
     track = models.ForeignKey(Track, related_name='usertrackrel_track', on_delete=models.CASCADE)
     relationship_type = MultiSelectField(choices=REALTIONSHIP_CHOICES, max_choices=1, max_length=19)
 
     def save(self, *args, **kwargs):
-        print(self)
         super(UserTrackRelationship, self).save(*args, **kwargs)

@@ -8,6 +8,7 @@ from rest_framework import viewsets
 from django_dubplates.models import Track
 from django_dubplates.serializers import TrackSerializer
 from django.contrib.auth.models import User
+# from django_dubplates.models import User
 from django_dubplates.serializers import UserSerializer
 from django_dubplates.models import UserTrackRelationship
 from django_dubplates.serializers import UserTrackRelSerializer
@@ -48,8 +49,6 @@ class UserTrackRelViewSet(viewsets.ModelViewSet):
 	serializer_class = UserTrackRelSerializer
 
 	def perform_create(self, serializer):
-		print(self)
-		print(serializer)
 		serializer.save()
 
 
