@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework import permissions
 from rest_framework import viewsets
+from rest_framework.exceptions import APIException
 
 from django_dubplates.models import Track
 from django_dubplates.serializers import TrackSerializer
@@ -44,11 +45,24 @@ class UserViewSet(viewsets.ModelViewSet):
 		print('calling perform_create() in views.py')
 		serializer.save()
 
+class TrackAlreadyHasOwner(APIException):
+	status_code = 404
+	default_detail = 'this track already has a user_owns_track relationship instance'
+	default_code = 'already_has_owner'
+
 class UserTrackRelViewSet(viewsets.ModelViewSet):
 	queryset = UserTrackRelationship.objects.all()
 	serializer_class = UserTrackRelSerializer
 
 	def perform_create(self, serializer):
+		track_id = serializer.data['track']
+		user_id = serializer.data['user']
+		relationship_type = serializer.data['relationship_type']
+		if relationship_type=='user_owns_track':
+			owns_instances = UserTrackRelationship.objects.filter(track_id=track_id).filter(relationship_type__contains='user_owns_track')
+			already_exists = len(owns_instances) > 0
+			if already_exists:
+				raise TrackAlreadyHasOwner
 		serializer.save()
 
 
