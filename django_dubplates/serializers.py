@@ -72,14 +72,6 @@ class UserTrackRelSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'track', 'relationship_type']
 
     def create(self, validated_data):
-        user_id = validated_data['user'].id
-        track_id = validated_data['track'].id 
-        relationship_type = validated_data['relationship_type']
-        print('********************************')
-        print(relationship_type)        
-        # print(UserTrackRelationship.objects.filter(user_id=8).filter(track_id=5).filter(relationship_type__contains='user_owns_track'))
-        print('********************************')
-
-        # user_track_serializer = super(UserTrackRelSerializer, self).create(validated_data)
-        # user_track_serializer.save()
-        # return user_track_serializer
+        user_track_serializer = super(UserTrackRelSerializer, self).create(validated_data)
+        user_track_serializer.save()
+        return user_track_serializer
