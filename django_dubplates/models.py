@@ -1,27 +1,7 @@
 from django.db import models
-from pygments.lexers import get_lexer_by_name
-from pygments.formatters.html import HtmlFormatter
-from pygments import highlight
 from multiselectfield import MultiSelectField
 
 highlighted = models.TextField()
-
-# class User(models.Model):
-#     created = models.DateTimeField(auto_now_add=True)
-#     username = models.CharField(max_length=50, blank=False)
-#     password = models.CharField(max_length=50, blank=False)
-#     is_superuser = models.BooleanField(default=False)
-#     email = models.EmailField(max_length = 254, blank=False)
-#     # tracks_owned
-#     # tracks_watching
-#     # tracks_copy_purchased
-
-#     class Meta:
-#         ordering = ['created']
-
-#     def save(self, *args, **kwargs):
-#         print('calling save() in models.py')
-#         super(User, self).save(*args, **kwargs)
 
 class Track(models.Model):
     created = models.DateTimeField(auto_now_add=True)

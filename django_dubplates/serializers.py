@@ -29,16 +29,42 @@ from django.contrib.auth.models import User
 #      instance.save()
 #      return instance
 
+class UserTrackRelSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=False, read_only=False)
+    track = serializers.PrimaryKeyRelatedField(queryset=Track.objects.all(), many=False, read_only=False)
+
+    class Meta:
+        model = UserTrackRelationship
+        fields = ['id', 'user', 'track', 'relationship_type']
+
+    def create(self, validated_data):
+        user_track_serializer = super(UserTrackRelSerializer, self).create(validated_data)
+        user_track_serializer.save()
+        return user_track_serializer
+
+
+
 class TrackSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.IntegerField(read_only=True)
     title = serializers.CharField(required=True, allow_blank=False, max_length=100)
     download_url = serializers.CharField(required=True)
-    owner = serializers.ReadOnlyField(source='owner.username')
+    # user_relationships = UserTrackRelSerializer(many=True, read_only=True)
+    track_user_relationships = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    track_owner_relationship = serializers.SerializerMethodField()
+
+    def get_track_owner_relationship(self, track):
+        q_result = UserTrackRelationship.objects.filter(track_id=track).filter(relationship_type__contains='user_owns_track')
+        if q_result.exists():
+            ownership_instance = q_result[0]
+            serializer = UserTrackRelSerializer(instance=ownership_instance, many=False)  
+            return serializer.data
+        else:
+            return None
 
     class Meta:
         model = Track
-        fields = ['url', 'id', 'title', 'owner',
-                  'download_url']
+        fields = ['url', 'id', 'title', 'download_url', 'track_user_relationships', 'track_owner_relationship']
 
 
 # class UserSerializer(serializers.ModelSerializer):
@@ -62,16 +88,4 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         user.save()
         return user
 
-class UserTrackRelSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(read_only=True)
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=False, read_only=False)
-    track = serializers.PrimaryKeyRelatedField(queryset=Track.objects.all(), many=False, read_only=False)
 
-    class Meta:
-        model = UserTrackRelationship
-        fields = ['id', 'user', 'track', 'relationship_type']
-
-    def create(self, validated_data):
-        user_track_serializer = super(UserTrackRelSerializer, self).create(validated_data)
-        user_track_serializer.save()
-        return user_track_serializer
