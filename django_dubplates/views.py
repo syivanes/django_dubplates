@@ -25,12 +25,29 @@ class TrackViewSet(viewsets.ModelViewSet):
 
 	queryset = Track.objects.all()
 	serializer_class = TrackSerializer
-	permission_classes = [permissions.IsAuthenticatedOrReadOnly,
-						  IsOwnerOrReadOnly]
+	permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+	# permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+	# 					  IsOwnerOrReadOnly]
 
 	def perform_create(self, serializer):
 		# serializer.save(owner=self.request.user)
-		serializer.save()
+		print('%%%%%%%%%%%%%%%%')
+		print(self.request.data)
+		if 'owner_user_id' in self.request.data:
+			serializer.save()
+			new_track_id = serializer.data['id']
+
+			data = {'track': new_track_id, 'user': self.request.data['owner_user_id'], 'relationship_type': 'user_owns_track'}
+			user_track_serializer = UserTrackRelSerializer(data=data)
+			if user_track_serializer.is_valid():
+				user_track_serializer.save()
+			else:
+				serializer.delete()
+		else:
+			content = {'Conflict: creating a Track requires owner_user_id parameter'}
+			return Response(content, status=status.HTTP_409_CONFLICT)
+		print('%%%%%%%%%%%%%%%%')
+		# serializer.save()
 
 	# def retrieve(self, request, pk=None):
 	# 	track = Track.objects.filter(track_id=pk)
