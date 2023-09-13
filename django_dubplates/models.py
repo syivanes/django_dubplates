@@ -7,6 +7,7 @@ class Track(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=100, blank=True, default='')
     download_url = models.TextField()
+    stripe_price_id = models.CharField(max_length=120, blank=True, default='')
     track_user_relationships = models.ManyToManyField(
         'auth.User',
         through='UserTrackRelationship',
@@ -28,6 +29,7 @@ class UserTrackRelationship(models.Model):
     user = models.ForeignKey('auth.User', related_name='usertrackrel_user', on_delete=models.CASCADE)
     track = models.ForeignKey(Track, related_name='usertrackrel_track', on_delete=models.CASCADE)
     relationship_type = MultiSelectField(choices=REALTIONSHIP_CHOICES, max_choices=1, max_length=19)
+    stripe_transaction_id = models.CharField(max_length=50, blank=True, default='')
 
     def save(self, *args, **kwargs):
         super(UserTrackRelationship, self).save(*args, **kwargs)

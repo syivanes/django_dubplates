@@ -2,3 +2,5 @@
 *.sqlite3
 *.pyc
 env
+.env
+test_env_keys.py

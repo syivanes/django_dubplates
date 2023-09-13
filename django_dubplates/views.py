@@ -1,3 +1,7 @@
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -15,6 +19,8 @@ from django_dubplates.serializers import UserSerializer
 from django_dubplates.models import UserTrackRelationship
 from django_dubplates.serializers import UserTrackRelSerializer
 from django_dubplates.permissions import IsOwnerOrReadOnly
+
+import stripe
 
 
 class TrackViewSet(viewsets.ModelViewSet):
@@ -136,6 +142,9 @@ class UserTrackRelViewSet(viewsets.ModelViewSet):
 					content = {'Conflict: user is owner of this track, can\'t purchase a copy'}
 					return Response(content, status=status.HTTP_409_CONFLICT)
 		serializer.save()
+
+class PaymentViewSet(viewsets.ModelViewSet):
+	stripe.api_key = str(os.getenv('STRIPE_PUBLISHABLE_KEY'))
 
 
 @api_view(['GET'])
